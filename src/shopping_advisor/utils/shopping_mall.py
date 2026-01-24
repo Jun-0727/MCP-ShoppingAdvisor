@@ -62,6 +62,21 @@ def get_mall_detail(mall_name: str) -> Optional[Dict]:
     """
     return SHOPPING_MALLS.get(mall_name)
 
+def get_mall_description(mall_name: str) -> Optional[str]:
+    """쇼핑몰 설명 조회
+    
+    Args:
+        mall_name (str): 쇼핑몰 이름
+        
+    Returns:
+        Optional[str]: 쇼핑몰 설명 또는 None
+    """
+    mall_data = get_mall_detail(mall_name)
+    
+    if not mall_data:
+        return None
+
+    return mall_data.get("description") 
 
 def get_mall_pros(mall_name: str) -> Optional[Dict[str, List[str]]]:
     """쇼핑몰 장점 조회
@@ -114,24 +129,7 @@ def get_mall_best_for(mall_name: str) -> Optional[List[str]]:
     return mall_data.get("best_for", [])
 
 
-def get_mall_feature(mall_name: str) -> Optional[str]:
-    """쇼핑몰 특징 조회
-    
-    Args:
-        mall_name (str): 쇼핑몰 이름
-        
-    Returns:
-        Optional[str]: 쇼핑몰 설명 또는 None
-    """
-    mall_data = get_mall_detail(mall_name)
-    
-    if not mall_data:
-        return None
-    
-    return mall_data.get("description")
-
-
-def generate_shopping_url(mall_name: str, product_name: str) -> Optional[str]:
+def generate_shopping_mall_url(mall_name: str, product_name: str) -> Optional[str]:
     """쇼핑몰 URL 생성
     
     Args:

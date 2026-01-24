@@ -1,4 +1,5 @@
-"""GPT API 수동 테스트 스크립트.
+"""
+GPT API 수동 테스트 스크립트.
 
 직접 실행하여 API 응답을 확인합니다.
 """
@@ -16,7 +17,11 @@ sys.path.insert(0, str(project_root / "src"))
 # .env 로드
 load_dotenv(project_root / ".env")
 
-from shopping_advisor.utils.gpt_api import product_info_request, mall_recommend_request, compare_products_request
+from shopping_advisor.utils.gpt_api import (
+    product_info_request, 
+    mall_recommend_request, 
+    compare_products_request
+)
 
 
 async def test_get_product():
@@ -39,7 +44,7 @@ async def test_get_product():
 
 
 async def test_recommend_mall():
-    """단일 제품 테스트"""
+    """쇼핑몰 추천 테스트"""
     print("=" * 60)
     print("쇼핑몰 추천 테스트")
     print("=" * 60)
@@ -47,6 +52,7 @@ async def test_recommend_mall():
     product = input("제품명을 입력하세요 (예: 마샬 스피커): ")
     
     print(f"\n🔍 '{product}' 쇼핑몰 추천 중...")
+
     result = await mall_recommend_request(product)
     
     if result:
@@ -62,11 +68,15 @@ async def test_compare_products():
     print("제품 비교 테스트(2개))")
     print("=" * 60)
 
-    product_1 = input("비교할 제품(1)을 입력하세요 (예: 아이폰16): ")
-    product_2 = input("비교할 제품(2)을 입력하세요 (예: 갤럭시24): ")
+    product_list = list(split(",") for split in input("비교할 제품명을 쉼표(,)로 구분하여 입력하세요 (예: 아이폰16, 갤럭시24)"))
+    
+    if len(product_list) < 2:
+        print("\n⚠️ 2개 이상의 제품명을 입력하세요.")
+        return None
+    
+    print(f"\n🔍 제품 비교중...")
 
-    print(f"\n🔍 '{product_1} & {product_2}' 비교중...")
-    result = await compare_products_request([product_1, product_2])
+    result = await compare_products_request(product_list)
 
     if result:
         print("\n✅ 조회 성공!")
@@ -111,3 +121,5 @@ if __name__ == "__main__":
         print("\n\n👋 사용자에 의해 종료되었습니다.")
     except Exception as e:
         print(f"\n❌ 오류 발생: {e}")
+        import traceback
+        traceback.print_exc()

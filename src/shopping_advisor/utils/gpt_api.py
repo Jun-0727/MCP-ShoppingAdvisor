@@ -166,7 +166,7 @@ async def mall_recommend_request(product_name: str) -> Optional[dict]:
         return None
 
 
-async def compare_products_request(product_names: List[str],comparison_points: Optional[List[str]] = None) -> Optional[Dict[str, Any]]:
+async def compare_products_request(product_list: List[str],comparison_points: Optional[List[str]] = None) -> Optional[Dict[str, Any]]:
     """N개 제품을 GPT API로 비교 분석합니다.
 
     Args:
@@ -186,7 +186,7 @@ async def compare_products_request(product_names: List[str],comparison_points: O
     """
     
     # 입력 검증
-    if not product_names or len(product_names) < 2:
+    if not product_list or len(product_list) < 2:
         logger.warning("제품 비교 요청 실패: 최소 2개 이상의 제품이 필요합니다.")
         return None
     
@@ -197,7 +197,7 @@ async def compare_products_request(product_names: List[str],comparison_points: O
     
     try:
         # 제품 목록 포맷팅
-        products_list = "\n".join([f"{i+1}. {name}" for i, name in enumerate(product_names)])
+        products_list = "\n".join([f"{i+1}. {name}" for i, name in enumerate(product_list)])
         
         # 사용자 프롬프트 생성
         user_prompt = COMPARE_PRODUCTS_USER_PROMPT.format(products_list=products_list)

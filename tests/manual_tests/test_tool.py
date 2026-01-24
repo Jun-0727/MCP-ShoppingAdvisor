@@ -8,7 +8,6 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
 from shopping_advisor.utils.tool import (
-    mcp,
     get_product,
     create_shopping_guide,
     compare_products
@@ -17,8 +16,8 @@ from shopping_advisor.utils.tool import (
 
 async def test_get_product():
     """제품 상세 조회 테스트"""
-    print("\n" + "=" * 60)
-    print("테스트: 제품 상세 조회")
+    print("=" * 60)
+    print("제품 상세 조회 테스트")
     print("=" * 60)
     
     product = input("제품명을 입력하세요 (예: 마샬 스피커): ").strip() or "마샬 스피커"
@@ -26,6 +25,7 @@ async def test_get_product():
     print(f"\n🔍 '{product}'에 대한 정보 조회 중...\n")
     
     result = await get_product(product)
+
     if result:
         print("✅ 성공!")
         print("\n" + json.dumps(result, ensure_ascii=False, indent=2))
@@ -35,8 +35,8 @@ async def test_get_product():
 
 async def test_create_shopping_guide():
     """쇼핑 가이드 생성 테스트"""
-    print("\n" + "=" * 60)
-    print("테스트: 쇼핑 가이드 생성")
+    print("=" * 60)
+    print("쇼핑 가이드 생성 테스트")
     print("=" * 60)
     
     product = input("제품명을 입력하세요 (예: 마샬 스피커): ").strip() or "마샬 스피커"
@@ -54,25 +54,21 @@ async def test_create_shopping_guide():
 
 async def test_comapre_products():
     """제품 비교 테스트"""
-    print("\n" + "=" * 60)
-    print("테스트: 제품 비교 테스트")
+    print("=" * 60)
+    print("제품 비교 테스트")
     print("=" * 60)
     
-    product_1 = input("제품명(1)을 입력하세요 (예: 마샬 스피커): ").strip() or "마샬 스피커"
-    product_2 = input("제품명(2)을 입력하세요 (예: 마샬 스피커): ").strip() or "마샬 스피커"
-    
-    products = [product_1, product_2]
+    product_list = list(split(",") for split in input("비교할 제품명을 쉼표(,)로 구분하여 입력하세요 (예: 아이폰16, 갤럭시24)"))
 
-    print(f"\n🔍 '{products}' 제품 비교중...\n")
+    print(f"\n🔍 '{product_list}' 제품 비교중...\n")
     
-    guide = await compare_products(products)
+    guide = await compare_products(product_list)
     
     if guide:
         print("✅ 성공!")
         print("\n" + json.dumps(guide, ensure_ascii=False, indent=2))
     else:
         print("❌ 실패")
-
 
 
 async def main():
