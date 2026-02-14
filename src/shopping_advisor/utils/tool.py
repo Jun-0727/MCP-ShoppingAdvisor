@@ -14,6 +14,8 @@ from .gpt_api import (
     compare_products_request
 )
 
+from .cache_manager import cache_manager
+
 ERROR_MESSAGE = "잠시 후 다시 시도해주세요."
 
 TOOLS_INFO = [
@@ -82,7 +84,7 @@ mcp = FastMCP("shopping-advisor")
 @mcp.tool(name="get_product", description="제품명을 기반으로 제품의 특징, 장점, 단점, 구매 시 확인사항을 제공합니다.")
 async def get_product(product_name: str) -> Optional[dict]:
     """
-    제품 정보를 조회하여 구매 결정에 필요한 핵심 정보를 제공합니다.
+    제품 정보를 조회하여 구매 결정에 필요한 핵심 정보를 제공합니다.(캐싱 지원)
     
     - 제품의 주요 특징 및 사양
     - 장점 (Pros): 제품의 강점과 우수한 점
@@ -96,18 +98,27 @@ async def get_product(product_name: str) -> Optional[dict]:
         제품 정보를 포함한 딕셔너리 또는 제품을 찾을 수 없는 경우 None
 
     """
+    logger.info(f"제품 조회: {product_name}")
     
-    logger.info(f"제품 정보 조회 시작: {product_name}")
+    # 1. 캐시에서 제품 정보 조회
+    cached_data = cache_manager.get(product_name)
+    if cached_data:
+        return cached_data
     
+    # 2. GPT API로 제품 정보 조회
     try:
-        product = await product_info_request(product_name)
+        product_data = await product_info_request(product_name)
         
         # API 레이트 리밋 방지
         await asyncio.sleep(1)
         
-        if product:
-            logger.info(f"제품 정보 조회 성공: {product_name}")
-            return product
+        if product_data:
+            logger.debug(f"제품 조회 요청 성공: {product_name}")
+            
+            # 3. 캐시에 저장
+            cache_manager.set(product_name, product_data)
+
+            return product_data
         else:
             logger.warning(f"제품 정보 조회 실패: {product_name}")
             return None
@@ -130,7 +141,7 @@ async def create_shopping_guide(product_name: str) -> Optional[dict]:
         
     """
     
-    logger.info(f"쇼핑 가이드 생성 시작: {product_name}")
+    logger.info(f"쇼핑 가이드 생성: {product_name}")
 
     try:
         # 제품 정보 조회
@@ -146,7 +157,7 @@ async def create_shopping_guide(product_name: str) -> Optional[dict]:
         }
 
         if guide:
-            logger.info(f"쇼핑 가이드 생성 성공: {product_name}")
+            logger.debug(f"쇼핑 가이드 생성 성공: {product_name}")
             return guide
         else:
             logger.warning(f"쇼핑 가이드 생성 실패: {product_name}")
