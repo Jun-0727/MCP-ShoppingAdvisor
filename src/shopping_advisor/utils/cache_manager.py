@@ -1,5 +1,6 @@
-from typing import Optional, Dict, Any
 import logging
+from collections import OrderedDict
+from typing import Optional, Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -7,13 +8,14 @@ class SimpleMemoryCache:
     """메모리 전용 캐시 (재시작 시 초기화됨)"""
     
     def __init__(self, max_size: int = 1000):
-        self._cache: Dict[str, Dict[str, Any]] = {}
+        self._cache: OrderedDict[str, Dict[str, Any]] = OrderedDict()
         self.max_size = max_size
     
     def get(self, product_name: str) -> Optional[Dict[str, Any]]:
         """캐시 조회"""
         key = product_name.lower()
         if key in self._cache:
+            self._cache.move_to_end(key)
             logger.debug(f"캐시 히트: {product_name}")
             return self._cache[key]
         return None
@@ -21,11 +23,10 @@ class SimpleMemoryCache:
     def set(self, product_name: str, data: Dict[str, Any]):
         """캐시 저장"""
         key = product_name.lower()
-        
+          
         # 캐시 교체 알고리즘 - LRU
         if len(self._cache) >= self.max_size:
-            oldest_key = next(iter(self._cache))
-            del self._cache[oldest_key]
+            oldest_key, _ = self._cache.popitem(last=False)
             logger.debug(f"캐시 용량 초과, 삭제: {oldest_key}")
         
         self._cache[key] = data
