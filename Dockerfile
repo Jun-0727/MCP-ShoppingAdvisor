@@ -53,7 +53,7 @@ COPY --from=builder /app/.venv ./.venv
 COPY --chown=appuser:appuser src ./src
 
 # logs 디렉토리 생성
-RUN mkdir -p logs && chown appuser:appuser logs
+RUN mkdir -p logs data && chown -R appuser:appuser logs data
 
 # 유저 설정
 USER appuser
