@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv
+ENV
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# 테스트
+.pytest_cache
+.coverage
+htmlcov
+.tox
+
+# 빌드
+*.egg-info
+dist
+build
+
+# 환경 파일 (필요시 주석 해제)
+.env
+.env.*
+
+# 로그
+*.log
+logs/
+
+# 문서
+README.md
+README*
+*.md
+docs/
+
+# Docker
+Dockerfile*
+docker-compose*
+.docker
+
+# 기타
+.DS_Store
+Thumbs.db

@@ -66,3 +66,9 @@ logs/
 
 # Distribution / packaging
 pip-wheel-metadata/
+
+# DB
+data/*.db
+
+# Claude Code
+.claude
