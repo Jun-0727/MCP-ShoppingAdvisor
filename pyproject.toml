@@ -1,6 +1,6 @@
 [project]
 name = "shopping-advisor"
-version = "0.1.0"
+version = "1.1.0"
 description = "Smart Shopping Advisor MCP Server - 제품 특징, 쇼핑몰 비교, 구매 가이드 제공"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -20,14 +20,8 @@ dependencies = [
 ]
 
 [project.scripts]
-shopping_advisor = "shopping_advisor.server:main"
+shopping_advisor = "shopping_advisor.server:main"   # server.py의 main()을 가리킴
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=8.0.0",
-    "pytest-asyncio>=0.24.0",
-]
